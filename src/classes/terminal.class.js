@@ -1,4 +1,7 @@
 class Terminal {
+    // TODO
+    // Create some form of env variable checker that only allows the frontend to connect with the right env variable
+    // Malicious websites therefore cannot connect because they don't know the env variable to establish connection
     constructor(opts) {
         if (opts.role === "client") {
             if (!opts.parentId) throw "Missing options";
@@ -175,8 +178,10 @@ class Terminal {
 
             let sockHost = opts.host || "127.0.0.1";
             let sockPort = this.port;
+            
+            //Secure connection by changing ws to wss (forces connection to https only as opposed to http)
+            this.socket = new WebSocket("wss://"+sockHost+":"+sockPort);
 
-            this.socket = new WebSocket("ws://"+sockHost+":"+sockPort);
             this.socket.onopen = () => {
                 let attachAddon = new AttachAddon(this.socket);
                 this.term.loadAddon(attachAddon);
